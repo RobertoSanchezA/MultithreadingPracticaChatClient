@@ -3,9 +3,9 @@ package com.company;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {
@@ -20,7 +20,6 @@ public class Main {
         ois = new ObjectInputStream(socket.getInputStream());
 
         Scanner scan = new Scanner(System.in);
-        ArrayList<String> msgList = new ArrayList<String>();
 
         try{
             //envio nombre de usuario
@@ -33,7 +32,7 @@ public class Main {
             boolean justConnected = true;
 
             while (!keepTalking) {
-                if(justConnected){
+                if (justConnected) {
                     System.out.println(ois.readObject());
                     justConnected = false;
                 }
@@ -41,13 +40,12 @@ public class Main {
                 System.out.println("Escribe el mensaje ");
                 msg = scan.nextLine();
 
-                if(!msg.equals("good bye")) {
-                    //Envío el mensaje al servidor y espero la respuesta
-                    oos.writeObject(msg);
+                //Envío el mensaje al servidor y espero la respuesta
+                oos.writeObject(msg);
 
-                    //msgList.add((String) ois.readObject());
-                    System.out.println(ois.readObject());
-                } else {
+                String msgReceived = (String) ois.readObject();
+                if (msgReceived.equals("good bye")) {
+                    System.out.println(msgReceived);
                     keepTalking = true;
                 }
             }
